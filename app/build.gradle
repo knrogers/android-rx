@@ -47,6 +47,11 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
+    implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$rxjava_adapter_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
+
     implementation "com.squareup.picasso:picasso:$picasso_version"
 
     testImplementation "junit:junit:$junit_version"
