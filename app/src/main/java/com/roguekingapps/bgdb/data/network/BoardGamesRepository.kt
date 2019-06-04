@@ -1,38 +1,36 @@
 package com.roguekingapps.bgdb.data.network
 
-import androidx.lifecycle.LiveData
 import com.roguekingapps.bgdb.data.database.BoardGame
 import com.roguekingapps.bgdb.data.database.BoardGameDao
+import io.reactivex.Observable
+import retrofit2.Response
 
 class BoardGamesRepositoryImpl(
-    private val appExecutors: AppExecutors,
     private val service: BoardGamesService,
     private val boardGameDao: BoardGameDao
 ) : BoardGamesRepository {
 
-    override fun getBoardGames() : LiveData<Resource<List<BoardGame>>> {
-        return object : NetworkBoundResource<List<BoardGame>, BoardGamesDto>(appExecutors) {
+    override fun getBoardGames(): Observable<Resource<List<BoardGame>>> {
+        return object : NetworkBoundResource<BoardGamesDto, List<BoardGame>>() {
 
-            override fun saveCallResult(data: BoardGamesDto) {
+            override fun saveCallResult(data: BoardGamesDto?) {
+                if (data == null) return
                 val boardGames = data.boardGameDtos.map {
                     BoardGame(it.rank, it.id, it.name, it.year, it.thumbnailUrl)
                 }
                 boardGameDao.insertAll(boardGames)
             }
 
-            override fun shouldFetch(data: List<BoardGame>?): Boolean = true
+            override fun loadFromDb(): Observable<List<BoardGame>> = boardGameDao.getBoardGames().toObservable()
 
-            override fun loadFromDb(): LiveData<List<BoardGame>> = boardGameDao.getBoardGames()
-
-            override fun createCall(): LiveData<ApiResponse<BoardGamesDto>> = service.getBoardGames()
-
-        }.asLiveData()
+            override fun createCall(): Observable<Response<BoardGamesDto>> = service.getBoardGames()
+        }.asObservable()
     }
 
 }
 
 interface BoardGamesRepository {
 
-    fun getBoardGames() : LiveData<Resource<List<BoardGame>>>
+    fun getBoardGames() : Observable<Resource<List<BoardGame>>>
 
 }
