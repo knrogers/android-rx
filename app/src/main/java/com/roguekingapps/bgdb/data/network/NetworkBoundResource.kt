@@ -1,18 +1,18 @@
 package com.roguekingapps.bgdb.data.network
 
-import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 
 abstract class NetworkBoundResource<RequestType, ResultType> {
 
-    private val result: Flowable<Resource<ResultType>>
+    private val result: Observable<Resource<ResultType>>
 
     init {
-        val diskObservable = Flowable.defer { loadFromDb().subscribeOn(Schedulers.io()) }
+        val diskObservable = Observable.defer { loadFromDb().subscribeOn(Schedulers.io()) }
 
-        val networkObservable = Flowable.defer {
+        val networkObservable = Observable.defer {
             createCall()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -23,7 +23,7 @@ abstract class NetworkBoundResource<RequestType, ResultType> {
                 .flatMap { loadFromDb() }
         }
 
-        result = Flowable.merge(
+        result = Observable.merge(
             diskObservable
                 .map<Resource<ResultType>> { Resource.success(it) }
                 .onErrorReturn { Resource.error(it.message as String, null) }
@@ -37,11 +37,11 @@ abstract class NetworkBoundResource<RequestType, ResultType> {
 
     }
 
-    fun asFlowable(): Flowable<Resource<ResultType>> = result
+    fun asObservable(): Observable<Resource<ResultType>> = result
 
     protected abstract fun saveCallResult(data: RequestType?)
 
-    protected abstract fun loadFromDb(): Flowable<ResultType>
+    protected abstract fun loadFromDb(): Observable<ResultType>
 
-    protected abstract fun createCall(): Flowable<Response<RequestType>>
+    protected abstract fun createCall(): Observable<Response<RequestType>>
 }
