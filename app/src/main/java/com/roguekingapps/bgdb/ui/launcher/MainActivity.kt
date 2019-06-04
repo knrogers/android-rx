@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.roguekingapps.bgdb.R
 import com.roguekingapps.bgdb.application.BGDbApplication
+import com.roguekingapps.bgdb.data.database.BoardGame
 import com.roguekingapps.bgdb.data.network.Status.ERROR
 import com.roguekingapps.bgdb.data.network.Status.LOADING
 import com.roguekingapps.bgdb.data.network.Status.SUCCESS
-import com.roguekingapps.bgdb.data.database.BoardGame
 import com.roguekingapps.bgdb.di.DaggerMainActivityComponent
 import com.roguekingapps.bgdb.ui.boardgame.BoardGamesViewModel
 import com.roguekingapps.bgdb.ui.launcher.MainActivity.BoardGamesAdapter.BoardGameViewHolder
